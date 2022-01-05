@@ -5,15 +5,23 @@ use std::io::{BufRead, BufReader, Write};
 use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize, Debug)]
+pub enum DefaultNotes {
+    CLNotes(String),
+    Logseq(String),
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
-    pub default_notes: String,
+    pub default_notes: DefaultNotes,
+    pub notes_path: Option<String>,
     pub logseq_path: Option<String>,
 }
 
 impl Config {
     pub fn new() -> Self {
         Self {
-            default_notes: "logseq".to_string(),
+            default_notes: DefaultNotes::Logseq(String::from("Logseq")),
+            notes_path: None,
             logseq_path: None,
         }
     }
@@ -41,6 +49,11 @@ impl Config {
         self.save_config();
     }
 
+    pub fn set_notes_path(&mut self, path: String) {
+        self.notes_path = Some(path);
+        self.save_config();
+    }
+
     fn save_config(&mut self) {
         let config_data = serde_json::to_string(self).unwrap();
         let config_path = PathBuf::from(self.get_config_path());
@@ -55,7 +68,7 @@ impl Config {
 
     fn get_config_path(&self) -> String {
         let mut config_path = "".to_string();
-        if let Some(proj_dirs) = ProjectDirs::from("com", "tylerdotdev", "lg") {
+        if let Some(proj_dirs) = ProjectDirs::from("com", "tylerdotdev", "CLNotes") {
             let dir = proj_dirs.config_dir();
             let base_path = dir.to_str().unwrap();
             std::fs::create_dir_all(base_path).unwrap();
