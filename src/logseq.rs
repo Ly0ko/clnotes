@@ -1,8 +1,7 @@
 use chrono::prelude::*;
 use std::fs::{File, OpenOptions};
 use std::io;
-use std::io::Write;
-use std::io::{BufRead, BufReader};
+use std::io::{BufRead, BufReader, Write};
 use std::path::PathBuf;
 
 fn open_file(path: &PathBuf) -> Result<File, io::Error> {
@@ -28,7 +27,7 @@ pub fn write_daily(logseq_path: String, note: String) -> std::io::Result<()> {
     let mut has_notes_header = false;
 
     for line in buf_reader.lines() {
-        let line = line.unwrap();
+        let line = line?;
 
         if line == notes_header {
             has_notes_header = true;
