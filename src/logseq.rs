@@ -24,7 +24,7 @@ pub fn write_daily(logseq_path: String, note: String) -> std::io::Result<()> {
     let file_path = PathBuf::from(logseq_path + "\\journals\\" + &get_date() + ".md");
     let mut file = open_file(&file_path)?;
     let buf_reader = BufReader::new(&file);
-    let notes_header = "- ## CLI Notes";
+    let notes_header = "- ## CLNotes";
     let mut has_notes_header = false;
 
     for line in buf_reader.lines() {
